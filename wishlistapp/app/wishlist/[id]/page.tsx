@@ -1,3 +1,5 @@
+import EditWlItem from "./EditWlItem";
+
 async function getWlItem(itemId: string) {
   const res = await fetch(
     `http://127.0.0.1:8090/api/collections/WishlistItems/records/${itemId}`,
@@ -18,6 +20,7 @@ export default async function ItemPage({ params }: any) {
         <p>{wlItem?.Price}</p>
         <p>{wlItem?.Item_link}</p>
       </div>
+      <EditWlItem wl_item={wlItem} />
     </div>
   );
 }

@@ -32,6 +32,7 @@ export default function CreateWlItem() {
     <form onSubmit={create}>
       <h1>Create Wishlist Item</h1>
       <input
+        name="nameField"
         type="text"
         placeholder="Name"
         onChange={(e) =>
@@ -40,6 +41,7 @@ export default function CreateWlItem() {
         value={content.Name}
       />
       <input
+        name="priceField"
         type="text"
         placeholder="Price"
         onChange={(e) =>
@@ -48,6 +50,7 @@ export default function CreateWlItem() {
         value={content.Price}
       />
       <input
+        name="linkField"
         type="text"
         placeholder="Item_link"
         onChange={(e) =>
