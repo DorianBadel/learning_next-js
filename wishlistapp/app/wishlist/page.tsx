@@ -1,6 +1,5 @@
 import Link from "next/link";
 import CreateWlItem from "./[id]/CreateWlItem";
-
 async function getWishlistItems() {
   const res = await fetch(
     "http://127.0.0.1:8090/api/collections/WishlistItems/records?page=1&perPage=30",
@@ -18,7 +17,7 @@ export default async function WishlistPage() {
     <div>
       <h1>Wishlist Page</h1>
       <div>
-        {wishlistItems?.map((item) => {
+        {wishlistItems?.map((item: { id: any }) => {
           return <WishlistItem key={item.id} wl_item={item} />;
         })}
       </div>
