@@ -3,7 +3,7 @@ import EditWlItem from "./EditWlItem";
 async function getWlItem(itemId: string) {
   const res = await fetch(
     `http://127.0.0.1:8090/api/collections/WishlistItems/records/${itemId}`,
-    { next: { revalidate: 10 } }
+    { cache: "no-store" }
   );
 
   const data = await res.json();

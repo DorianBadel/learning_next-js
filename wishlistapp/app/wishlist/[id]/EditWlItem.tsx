@@ -13,7 +13,8 @@ export default function EditWlItem({ wl_item }: any) {
 
   const router = useRouter();
 
-  const update = async () => {
+  const update = async (e: { preventDefault: () => void }) => {
+    e.preventDefault();
     await fetch(
       `http://127.0.0.1:8090/api/collections/WishlistItems/records/${wl_item.id}`,
       {
@@ -26,7 +27,8 @@ export default function EditWlItem({ wl_item }: any) {
         }),
       }
     );
-    router.back();
+    router.refresh();
+    router.push("/wishlist");
   };
 
   const deleteItem = async () => {
@@ -39,7 +41,8 @@ export default function EditWlItem({ wl_item }: any) {
       console.error("Error:", error);
     });
 
-    router.back();
+    router.refresh();
+    router.push("/wishlist");
   };
 
   return (
