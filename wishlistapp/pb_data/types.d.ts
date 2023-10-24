@@ -17703,7 +17703,7 @@ namespace types {
  /**
   * JsonRaw defines a json value type that is safe for db read/write.
   */
- interface JsonRaw extends string|Array<number>{}
+ interface JsonRaw extends string,Array<number>{}
  interface JsonRaw {
   /**
    * String returns the current JsonRaw instance as a json encoded string.
