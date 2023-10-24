@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { updateWlItem, deleteWlItem } from "@/app/(hooks)/pocketbase";
 
 export default function EditWlItem({ wl_item }: any) {
   const [content, setContent] = useState({
@@ -15,34 +16,22 @@ export default function EditWlItem({ wl_item }: any) {
 
   const update = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    await fetch(
-      `http://127.0.0.1:8090/api/collections/WishlistItems/records/${wl_item.id}`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...content,
-        }),
-      }
-    );
-    router.refresh();
-    router.push("/wishlist");
+    updateWlItem(
+      wl_item.id,
+      content.Name,
+      content.Price,
+      content.Item_link
+    ).then(() => {
+      router.refresh();
+      router.push("/wishlist");
+    });
   };
 
   const deleteItem = async () => {
-    await fetch(
-      `http://127.0.0.1:8090/api/collections/WishlistItems/records/${wl_item.id}`,
-      {
-        method: "DELETE",
-      }
-    ).catch((error) => {
-      console.error("Error:", error);
+    deleteWlItem(wl_item.id).then(() => {
+      router.refresh();
+      router.push("/wishlist");
     });
-
-    router.refresh();
-    router.push("/wishlist");
   };
 
   return (

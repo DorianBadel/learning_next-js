@@ -1,24 +1,21 @@
+import { getWlItem } from "@/app/(hooks)/pocketbase";
 import EditWlItem from "./EditWlItem";
 
-async function getWlItem(itemId: string) {
-  const res = await fetch(
-    `http://127.0.0.1:8090/api/collections/WishlistItems/records/${itemId}`,
-    { cache: "no-store" }
-  );
+//This can be changed to use client so that it always works
+//currently it breaks when a new item is created and edited.
 
-  const data = await res.json();
-  return data;
-}
-
+//Solution is the same as in DisplayWlItems
 export default async function ItemPage({ params }: any) {
   const wlItem = await getWlItem(params.id);
+  if (!wlItem) return <div>Item not found</div>;
+
   return (
     <div>
-      <h1>Wishlist/ {wlItem?.Name}</h1>
+      <h1>Wishlist/ {wlItem.Name}</h1>
       <div>
-        <h2>{wlItem?.Name}</h2>
-        <p>{wlItem?.Price}</p>
-        <p>{wlItem?.Item_link}</p>
+        <h2>{wlItem.Name}</h2>
+        <p>{wlItem.Price}</p>
+        <p>{wlItem.Item_link}</p>
       </div>
       <EditWlItem wl_item={wlItem} />
     </div>
