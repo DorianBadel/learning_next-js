@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { createWlItem } from "@/app/(hooks)/pocketbase";
 
 export default function CreateWlItem() {
   const [content, setContent] = useState({
@@ -13,19 +14,10 @@ export default function CreateWlItem() {
   const router = useRouter();
 
   const create = async () => {
-    await fetch("http://127.0.0.1:8090/api/collections/WishlistItems/records", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        ...content,
-      }),
+    createWlItem(content.Name, content.Price, content.Item_link).then(() => {
+      setContent({ Name: "", Price: "", Item_link: "" });
+      router.refresh();
     });
-
-    setContent({ Name: "", Price: "", Item_link: "" });
-
-    router.refresh();
   };
 
   return (

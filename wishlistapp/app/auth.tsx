@@ -1,38 +1,36 @@
 "use client";
 
-import PocketBase from "pocketbase";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
-
-const pb = new PocketBase("http://127.0.0.1:8090");
+import { login, signout, isUserValid } from "./(hooks)/pocketbase";
 
 export default function Auth() {
-  const [isLoading, setLoading] = useState(false);
+  // const [isLoading, setLoading] = useState(false);
   const { register, handleSubmit } = useForm();
 
-  const isLoggedIn = pb.authStore.isValid;
+  // const isLoggedIn = pb.authStore.isValid;
   const router = useRouter();
 
-  async function login(data: any) {
-    setLoading(true);
-    try {
-      const authData = await pb
-        .collection("users")
-        .authWithPassword(data.email, data.password);
-    } catch (e) {
-      alert(e);
-    }
-    setLoading(false);
-  }
+  // async function login(data: any) {
+  //   setLoading(true);
+  //   try {
+  //     const authData = await pb
+  //       .collection("users")
+  //       .authWithPassword(data.email, data.password);
+  //   } catch (e) {
+  //     alert(e);
+  //   }
+  //   setLoading(false);
+  // }
 
-  if (isLoggedIn)
+  if (isUserValid())
     return (
       <>
-        <h1>Logged in: {isLoggedIn && pb.authStore.model?.email.toString()}</h1>
+        <h1>Logged in: {isUserValid() && "Yeeee"}</h1>
         <button
           onClick={() => {
-            pb.authStore.clear();
+            signout();
             router.refresh();
           }}
         >
@@ -42,9 +40,13 @@ export default function Auth() {
     );
   return (
     <>
-      {isLoading && <p>Loading ...</p>}
+      {/* {isLoading && <p>Loading ...</p>} */}
 
-      <form onSubmit={handleSubmit(login)}>
+      <form
+        onSubmit={handleSubmit((e) => {
+          login(e.email, e.password);
+        })}
+      >
         <input type="text" placeholder="email" {...register("email")} />
         <input
           type="password"
