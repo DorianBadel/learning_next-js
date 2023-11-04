@@ -1,7 +1,7 @@
 import PocketBase from "pocketbase";
 
 //Defaults
-const url = `http://127.0.0.1:8090`;
+const url = `https://rough-thunder-1366.fly.dev`;
 const collection = "WishlistItems";
 const pb = new PocketBase(url);
 pb.autoCancellation(false);
