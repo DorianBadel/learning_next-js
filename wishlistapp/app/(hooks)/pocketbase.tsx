@@ -1,8 +1,7 @@
 import PocketBase from "pocketbase";
-
 //Defaults
-const url = `https://rough-thunder-1366.fly.dev`;
-const collection = "WishlistItems";
+export const url = `https://rough-thunder-1366.fly.dev`;
+const collectionItems = "WishlistItems";
 const pb = new PocketBase(url);
 pb.autoCancellation(false);
 
@@ -37,14 +36,36 @@ export function signout() {
 //   await pb.collection("users").create(data);
 // }
 
-//Getters
-export async function getAllWlItems() {
+const collectionTag = "WishlistTags";
+
+export type TagT = {
+  id: string;
+  Name: string;
+  Priority: number;
+  Items: ItemT[] | undefined;
+};
+export async function getAllTags(): Promise<TagT[] | undefined> {
+  if (!pb.authStore.isValid) return;
   try {
-    const data = await pb.collection(collection).getFullList({
-      sort: "-created",
-      user: pb.authStore.model?.id,
-    });
-    console.log(data);
+    const data = await pb
+      .collection(collectionTag)
+      .getFullList({
+        sort: "-created",
+        user: pb.authStore.model?.id,
+        expand: "Items",
+      })
+      .then((data) => {
+        const parsedData = data.map((tag) => {
+          return {
+            id: tag.id,
+            Name: tag.Name,
+            Priority: tag.Priority,
+            Items: tag.expand?.Items,
+          };
+        });
+        return parsedData;
+      });
+
     return data;
   } catch (e) {
     alert(e);
@@ -52,66 +73,172 @@ export async function getAllWlItems() {
   }
 }
 
-export async function getWlItem(id: string) {
+export type TagOptionT = {
+  id: string;
+  Name: string;
+};
+
+export async function getTagOptions(): Promise<TagOptionT[] | undefined> {
+  const data = await pb
+    .collection(collectionTag)
+    .getFullList({
+      sort: "-created",
+      user: pb.authStore.model?.id,
+      fields: "id,Name",
+    })
+    .then((data) => {
+      const parsedData = data.map((tag) => {
+        return {
+          id: tag.id,
+          Name: tag.Name,
+        };
+      });
+      return parsedData;
+    });
+  return data;
+}
+
+export async function createTag(name: string) {
+  if (!pb.authStore.isValid) return;
+  try {
+    const data = {
+      Name: name,
+      userId: pb.authStore.model?.id,
+      user: pb.authStore.model?.id,
+    };
+    await pb.collection(collectionTag).create(data);
+  } catch (e) {
+    alert(e);
+  }
+}
+
+export type ItemT = {
+  id: string;
+  Name: string;
+  Price: string;
+  Item_link: string;
+  Priority: number;
+};
+
+export async function getAllItems({
+  tagId,
+}: {
+  tagId: string;
+}): Promise<ItemT[] | undefined> {
+  if (!pb.authStore.isValid) return;
   try {
     const data = await pb
-      .collection(collection)
-      .getOne(id, { user: pb.authStore.model?.id });
-    console.log(data);
+      .collection(collectionItems)
+      .getFullList({
+        sort: "-created",
+        user: pb.authStore.model?.id,
+        filter: `tagId='${tagId}'`,
+      })
+      .then((data) => {
+        const parsedData = data.map((item) => {
+          return {
+            id: item.id,
+            Name: item.Name,
+            Price: item.Price,
+            Item_link: item.Item_link,
+            Priority: item.Priority,
+          };
+        });
+        return parsedData;
+      });
     return data;
   } catch (e) {
-    console.log("error", e);
+    alert(e);
+    return [];
   }
 }
+
+export type ItemPostT = {
+  Name: string;
+  Price: string;
+  Item_link: string;
+  Priority: number;
+  tagId: string;
+};
+
+export async function createWlItem(item: ItemPostT) {
+  if (!pb.authStore.isValid) return;
+  console.log("Create Item", item);
+  const data = {
+    Name: item.Name,
+    Price: item.Price,
+    Item_link: item.Item_link,
+    Priority: item.Priority,
+    tagId: item.tagId,
+    user: pb.authStore.model?.id,
+  };
+  await pb.collection(collectionItems).create(data);
+}
+
+// export async function createTag(name: string) {
+//   if (!pb.authStore.isValid) return;
+//   try {
+//     const data = {
+//       Name: name,
+//       userId: pb.authStore.model?.id,
+//       user: pb.authStore.model?.id,
+//     };
+//     await pb.collection(collectionTag).create(data);
+//   } catch (e) {
+//     alert(e);
+//   }
+// }
+
+// export async function getWlItem(id: string) {
+//   if (!pb.authStore.isValid) return;
+//   try {
+//     const data = await pb
+//       .collection(collectionItems)
+//       .getOne(id, { user: pb.authStore.model?.id });
+//     console.log(data);
+//     return data;
+//   } catch (e) {
+//     console.log("error", e);
+//   }
+// }
 
 //Setters
-export async function createWlItem(name: string, price: string, link: string) {
-  try {
-    const data = {
-      Name: name,
-      Price: price,
-      Item_link: link,
-      user: pb.authStore.model?.id,
-    };
-    await pb.collection(collection).create(data);
-  } catch (e) {
-    alert(e);
-  }
-}
 
-export async function updateWlItem(
-  id: string,
-  name: string,
-  price: string,
-  link: string
-) {
-  try {
-    const data = {
-      Name: name,
-      Price: price,
-      Item_link: link,
-      user: pb.authStore.model?.id,
-    };
-    await pb.collection(collection).update(id, data);
-  } catch (e) {
-    alert(e);
-  }
-}
+// export async function updateWlItem(
+//   id: string,
+//   name: string,
+//   price: string,
+//   link: string
+// ) {
+//   if (!pb.authStore.isValid) return;
+//   try {
+//     const data = {
+//       Name: name,
+//       Price: price,
+//       Item_link: link,
+//       user: pb.authStore.model?.id,
+//     };
+//     await pb.collection(collectionItems).update(id, data);
+//   } catch (e) {
+//     alert(e);
+//   }
+// }
 
-export async function deleteWlItem(id: string) {
-  let confirm = window.confirm("Are you sure you want to delete this task?");
-  if (!confirm) {
-    return;
-  }
+// export async function deleteWlItem(id: string) {
+//   if (!pb.authStore.isValid) return;
+//   let confirm = window.confirm("Are you sure you want to delete this task?");
+//   if (!confirm) {
+//     return;
+//   }
 
-  try {
-    await pb
-      .collection(collection)
-      .delete(id, { user: pb.authStore.model?.id });
-  } catch (e) {
-    alert(e);
-  }
-}
+//   try {
+//     await pb
+//       .collection(collectionItems)
+//       .delete(id, { user: pb.authStore.model?.id });
+//   } catch (e) {
+//     alert(e);
+//   }
+// }
 
 export default pb;
 

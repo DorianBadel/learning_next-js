@@ -2,22 +2,23 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { createWlItem } from "@/app/(hooks)/pocketbase";
+import { createWlItem, ItemPostT } from "@/app/(hooks)/pocketbase";
+import SelectTags from "./SelectTags";
 
 export default function CreateWlItem() {
-  const [content, setContent] = useState({
+  const [content, setContent] = useState<ItemPostT>({
     Name: "",
     Price: "",
     Item_link: "",
+    Priority: 0,
+    tagId: "",
   });
 
   const router = useRouter();
 
   const create = async () => {
-    createWlItem(content.Name, content.Price, content.Item_link).then(() => {
-      setContent({ Name: "", Price: "", Item_link: "" });
-      router.refresh();
-    });
+    if (!content) return;
+    await createWlItem(content).then(() => router.replace("/wishlist"));
   };
 
   return (
@@ -49,6 +50,12 @@ export default function CreateWlItem() {
           setContent((prev) => ({ ...prev, Item_link: e.target.value }))
         }
         value={content.Item_link}
+      />
+      <SelectTags
+        selectName={"nameField"}
+        selectionChange={(tagId: string) => {
+          setContent((prev) => ({ ...prev, tagId }));
+        }}
       />
       <button type="submit">Create note</button>
     </form>

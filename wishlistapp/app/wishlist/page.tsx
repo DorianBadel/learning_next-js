@@ -1,5 +1,4 @@
 // import Link from "next/link";
-import CreateWlItem from "./[id]/CreateWlItem";
 import DisplayWlItems from "./[id]/DisplayWlItems";
 
 export default async function WishlistPage() {
@@ -7,8 +6,6 @@ export default async function WishlistPage() {
     <div>
       <h1>Wishlist Page </h1>
       <DisplayWlItems />
-
-      <CreateWlItem />
     </div>
   );
 }

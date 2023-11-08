@@ -1,31 +1,56 @@
 "use client";
 
-import { getAllWlItems } from "@/app/(hooks)/pocketbase";
+import { TagT, getAllTags, ItemT, getAllItems } from "@/app/(hooks)/pocketbase";
 import Link from "next/link";
 
 import { useEffect, useState } from "react";
+import CreateWlGroup from "./CreateWlGroup";
 
 export default function DisplayWlItems() {
-  const [wishlistItems, setWishlistItems] = useState<any>([]);
+  const [wishlist, setWishlist] = useState<TagT[] | undefined>([]);
   const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
     setLoading(true);
-    getAllWlItems().then((data) => {
-      setWishlistItems(data);
-      setLoading(false);
-    });
+    getAllTags().then((data) => setWishlist(data));
+    setLoading(false);
   }, []);
 
   if (isLoading) return <p>Loading ...</p>;
 
-  if (!wishlistItems?.length) return <p>Please log in to see the wishlist</p>;
+  //TODO - add a check if the user is logged in
+  if (!wishlist?.length) return <p>Please log in to see the wishlist</p>;
 
   return (
     <div>
-      {wishlistItems?.map((item: { id: any }) => {
-        return <WishlistItem key={item.id} wl_item={item} />;
+      <CreateWlGroup />
+      {wishlist?.map((wl) => {
+        return <WishlistGroup key={wl.id} wishlist={wl} />;
       })}
+    </div>
+  );
+}
+
+function WishlistGroup({ wishlist }: { wishlist: TagT }) {
+  const [items, setItems] = useState<ItemT[] | undefined>([]);
+  const [isLoading, setLoading] = useState<boolean | null>(null);
+
+  function LoadItems() {
+    setLoading(true);
+    getAllItems({ tagId: wishlist.id }).then((data) => setItems(data));
+    setLoading(false);
+  }
+
+  if (isLoading !== null && isLoading) return <p>Loading ...</p>;
+
+  return (
+    <div>
+      <button onClick={LoadItems}>{wishlist.Name}</button>
+      {isLoading !== null &&
+        !isLoading &&
+        items?.map((wl_item) => {
+          return <WishlistItem key={wl_item.id} wl_item={wl_item} />;
+        })}
     </div>
   );
 }

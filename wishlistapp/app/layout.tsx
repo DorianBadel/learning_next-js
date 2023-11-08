@@ -4,9 +4,9 @@ import Link from "next/link";
 import "./globals.css";
 
 export default function RootLayout({
-  children
-}:{
- children: React.ReactNode;
+  children,
+}: {
+  children: React.ReactNode;
 }) {
   return (
     <html>
@@ -16,6 +16,7 @@ export default function RootLayout({
           <nav>
             <Link href="/">Home</Link>
             <Link href="/wishlist">Wishlist</Link>
+            <Link href="/createItem">Create Item</Link>
           </nav>
           {children}
         </main>

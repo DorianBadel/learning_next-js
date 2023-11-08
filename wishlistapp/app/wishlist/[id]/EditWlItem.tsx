@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { updateWlItem, deleteWlItem } from "@/app/(hooks)/pocketbase";
+// import { updateWlItem, deleteWlItem } from "@/app/(hooks)/pocketbase";
 
 export default function EditWlItem({ wl_item }: any) {
   const [content, setContent] = useState({
@@ -16,22 +16,22 @@ export default function EditWlItem({ wl_item }: any) {
 
   const update = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    updateWlItem(
-      wl_item.id,
-      content.Name,
-      content.Price,
-      content.Item_link
-    ).then(() => {
-      router.refresh();
-      router.push("/wishlist");
-    });
+    // updateWlItem(
+    //   wl_item.id,
+    //   content.Name,
+    //   content.Price,
+    //   content.Item_link
+    // ).then(() => {
+    //   router.refresh();
+    //   router.push("/wishlist");
+    // });
   };
 
   const deleteItem = async () => {
-    deleteWlItem(wl_item.id).then(() => {
-      router.refresh();
-      router.push("/wishlist");
-    });
+    // deleteWlItem(wl_item.id).then(() => {
+    //   router.refresh();
+    //   router.push("/wishlist");
+    // });
   };
 
   return (
