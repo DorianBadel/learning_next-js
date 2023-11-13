@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createWlItem, ItemPostT } from "@/app/(hooks)/pocketbase";
 import SelectTags from "./SelectTags";
+import { set } from "react-hook-form";
 
 export default function CreateWlItem() {
   const [content, setContent] = useState<ItemPostT>({
@@ -11,19 +12,39 @@ export default function CreateWlItem() {
     Price: "",
     Item_link: "",
     Priority: 0,
+    Image: undefined,
     tagId: "",
   });
+  const formData = new FormData();
 
   const router = useRouter();
 
-  const create = async () => {
+  const create = async (e: { preventDefault: () => void }) => {
+    e.preventDefault();
     if (!content) return;
-    await createWlItem(content).then(() => router.replace("/wishlist"));
+    await createWlItem(content).then(() => {
+      alert("Item Created");
+      router.replace("/wishlist");
+    });
   };
 
   return (
     <form onSubmit={create}>
       <h1>Create Wishlist Item</h1>
+      <input
+        name="imageField"
+        type="file"
+        placeholder="Image"
+        onChange={(e) => {
+          if (e.target.files) {
+            setContent((prev) => ({
+              ...prev,
+              Image: e.target.files ? e.target.files[0] : undefined,
+            }));
+            console.log(content.Image);
+          }
+        }}
+      />
       <input
         name="nameField"
         type="text"

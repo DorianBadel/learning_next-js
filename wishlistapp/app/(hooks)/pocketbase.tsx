@@ -181,17 +181,30 @@ export type ItemPostT = {
   Price: string;
   Item_link: string;
   Priority: number;
+  Image?: Blob;
   tagId: string;
 };
 
 export async function createWlItem(item: ItemPostT) {
   if (!pb.authStore.isValid) return;
-  console.log("Create Item", item);
-  const data = {
-    ...item,
-    user: pb.authStore.model?.id,
-  };
-  await pb.collection(collectionItems).create(data);
+  if (item.Image) {
+    const data = {
+      ...item,
+      user: pb.authStore.model?.id,
+    };
+    await pb.collection(collectionItems).create(data);
+  } else {
+    const data = {
+      Name: item.Name,
+      Price: item.Price,
+      Item_link: item.Item_link,
+      Priority: item.Priority,
+      tagId: item.tagId,
+
+      user: pb.authStore.model?.id,
+    };
+    await pb.collection(collectionItems).create(data);
+  }
 }
 
 export async function updateWlItem(item: ItemPostT, id: string) {
