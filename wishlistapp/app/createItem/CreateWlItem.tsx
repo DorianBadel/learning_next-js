@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createWlItem, ItemPostT } from "@/app/(hooks)/pocketbase";
 import SelectTags from "./SelectTags";
-import { set } from "react-hook-form";
 
 export default function CreateWlItem() {
   const [content, setContent] = useState<ItemPostT>({
@@ -15,7 +14,6 @@ export default function CreateWlItem() {
     Image: undefined,
     tagId: "",
   });
-  const formData = new FormData();
 
   const router = useRouter();
 

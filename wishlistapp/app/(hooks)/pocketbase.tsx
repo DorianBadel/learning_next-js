@@ -118,6 +118,7 @@ export type ItemT = {
   Price: string;
   Item_link: string;
   Priority: number;
+  Image?: string;
   Tag?: TagT;
 };
 
@@ -142,6 +143,7 @@ export async function getAllItems({
             Name: item.Name,
             Price: item.Price,
             Item_link: item.Item_link,
+            Image: item.Image,
             Priority: item.Priority,
           };
         });
@@ -167,6 +169,7 @@ export async function getWlItem(id: string): Promise<ItemT | undefined> {
           Price: data.Price,
           Item_link: data.Item_link,
           Priority: data.Priority,
+          Image: data.Image,
           Tag: data.expand?.tagId,
         };
       });
@@ -174,6 +177,16 @@ export async function getWlItem(id: string): Promise<ItemT | undefined> {
   } catch (e) {
     console.log("error", e);
   }
+}
+
+export function retrieveWlImageUrl(itemId: string, imgName: string) {
+  if (!pb.authStore.isValid) return "";
+
+  const imageUrl = `
+    ${url}/api/files/${collectionItems}/${itemId}/${imgName}?thumb=100x100
+  `;
+
+  return imageUrl;
 }
 
 export type ItemPostT = {

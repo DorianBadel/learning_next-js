@@ -1,6 +1,12 @@
 "use client";
 
-import { TagT, getAllTags, ItemT, getAllItems } from "@/app/(hooks)/pocketbase";
+import {
+  TagT,
+  getAllTags,
+  ItemT,
+  getAllItems,
+  retrieveWlImageUrl,
+} from "@/app/(hooks)/pocketbase";
 import Link from "next/link";
 
 import { useEffect, useState } from "react";
@@ -54,12 +60,17 @@ function WishlistGroup({ wishlist }: { wishlist: TagT }) {
     </div>
   );
 }
-function WishlistItem({ wl_item }: any) {
-  const { id, Name, Price, Item_link } = wl_item || {};
+function WishlistItem({ wl_item }: { wl_item: ItemT }) {
+  const { id, Name, Price, Item_link, Image } = wl_item;
 
   return (
     <Link href={`/wishlist/${id}`}>
       <div>
+        {Image && (
+          <>
+            <img src={retrieveWlImageUrl(id, Image)} alt="item image" />
+          </>
+        )}
         <h2>{Name}</h2>
         <p>{Price}</p>
         <p>{Item_link}</p>
