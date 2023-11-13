@@ -118,6 +118,7 @@ export type ItemT = {
   Price: string;
   Item_link: string;
   Priority: number;
+  Tag?: TagT;
 };
 
 export async function getAllItems({
@@ -155,7 +156,6 @@ export async function getAllItems({
 
 export async function getWlItem(id: string): Promise<ItemT | undefined> {
   if (!pb.authStore.isValid) return;
-  console.log(id);
   try {
     const data = await pb
       .collection(collectionItems)
@@ -170,7 +170,6 @@ export async function getWlItem(id: string): Promise<ItemT | undefined> {
           Tag: data.expand?.tagId,
         };
       });
-    console.log("getWlItem: ", data);
     return data;
   } catch (e) {
     console.log("error", e);

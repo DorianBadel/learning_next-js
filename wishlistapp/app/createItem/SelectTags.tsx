@@ -6,9 +6,11 @@ import { getTagOptions, TagOptionT } from "../(hooks)/pocketbase";
 function SelectTags({
   selectName,
   selectionChange,
+  initialValue,
 }: {
   selectName: string;
   selectionChange: (tagId: string) => void;
+  initialValue?: string;
 }) {
   const [tags, setTags] = useState<TagOptionT[] | undefined>([]);
   const [isLoading, setLoading] = useState(true);
@@ -34,8 +36,11 @@ function SelectTags({
           if (!e.target.value) return;
           selectionChange(e.target.value);
         }}
+        defaultValue={initialValue || ""}
       >
-        <option value="">Select a tag</option>
+        <option hidden value="">
+          Select a tag
+        </option>
         {tags.map((tag) => (
           <option key={tag.id} value={tag.id}>
             {tag.Name}
