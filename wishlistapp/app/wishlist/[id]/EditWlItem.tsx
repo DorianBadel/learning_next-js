@@ -1,9 +1,12 @@
 "use client"; // Makes sure the component is only rendered on the client side
-import { getWlItem } from "@/app/(hooks)/pocketbase";
+import {
+  deleteWlItem,
+  getWlItem,
+  updateWlItem,
+} from "@/app/(hooks)/pocketbase";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import SelectTags from "@/app/createItem/SelectTags";
-// import { updateWlItem, deleteWlItem } from "@/app/(hooks)/pocketbase";
 
 export default function EditWlItem({ wl_itemId }: { wl_itemId: string }) {
   const [content, setContent] = useState({
@@ -11,6 +14,7 @@ export default function EditWlItem({ wl_itemId }: { wl_itemId: string }) {
     Price: "",
     Item_link: "",
     tagId: "",
+    Priority: 0,
   });
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
@@ -23,30 +27,25 @@ export default function EditWlItem({ wl_itemId }: { wl_itemId: string }) {
         Price: wl_item.Price,
         Item_link: wl_item.Item_link,
         tagId: wl_item.Tag ? wl_item.Tag.id : "",
+        Priority: wl_item.Priority,
       });
       setIsLoading(false);
-      console.log(wl_item);
     });
   }, []);
 
-  const update = async (e: { preventDefault: () => void }) => {
-    e.preventDefault();
-    // updateWlItem(
-    //   wl_item.id,
-    //   content.Name,
-    //   content.Price,
-    //   content.Item_link
-    // ).then(() => {
-    //   router.refresh();
-    //   router.push("/wishlist");
-    // });
+  const update = async () => {
+    updateWlItem(content, wl_itemId).then(() => {
+      alert("Item updated");
+      router.refresh();
+      router.push("/wishlist");
+    });
   };
 
   const deleteItem = async () => {
-    // deleteWlItem(wl_item.id).then(() => {
-    //   router.refresh();
-    //   router.push("/wishlist");
-    // });
+    deleteWlItem(wl_itemId).then(() => {
+      router.refresh();
+      router.push("/wishlist");
+    });
   };
 
   if (isLoading) return <p>Loading ...</p>;

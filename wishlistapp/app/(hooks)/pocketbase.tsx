@@ -188,14 +188,38 @@ export async function createWlItem(item: ItemPostT) {
   if (!pb.authStore.isValid) return;
   console.log("Create Item", item);
   const data = {
-    Name: item.Name,
-    Price: item.Price,
-    Item_link: item.Item_link,
-    Priority: item.Priority,
-    tagId: item.tagId,
+    ...item,
     user: pb.authStore.model?.id,
   };
   await pb.collection(collectionItems).create(data);
+}
+
+export async function updateWlItem(item: ItemPostT, id: string) {
+  if (!pb.authStore.isValid) return;
+  try {
+    const data = {
+      ...item,
+      user: pb.authStore.model?.id,
+    };
+    await pb.collection(collectionItems).update(id, data);
+  } catch (e) {
+    alert(e);
+  }
+}
+
+export async function deleteWlItem(id: string) {
+  if (!pb.authStore.isValid) return;
+  let confirm = window.confirm("Are you sure you want to delete this task?");
+  if (!confirm) {
+    return;
+  }
+  try {
+    await pb
+      .collection(collectionItems)
+      .delete(id, { user: pb.authStore.model?.id });
+  } catch (e) {
+    alert(e);
+  }
 }
 
 // export async function createTag(name: string) {
@@ -213,42 +237,6 @@ export async function createWlItem(item: ItemPostT) {
 // }
 
 //Setters
-
-// export async function updateWlItem(
-//   id: string,
-//   name: string,
-//   price: string,
-//   link: string
-// ) {
-//   if (!pb.authStore.isValid) return;
-//   try {
-//     const data = {
-//       Name: name,
-//       Price: price,
-//       Item_link: link,
-//       user: pb.authStore.model?.id,
-//     };
-//     await pb.collection(collectionItems).update(id, data);
-//   } catch (e) {
-//     alert(e);
-//   }
-// }
-
-// export async function deleteWlItem(id: string) {
-//   if (!pb.authStore.isValid) return;
-//   let confirm = window.confirm("Are you sure you want to delete this task?");
-//   if (!confirm) {
-//     return;
-//   }
-
-//   try {
-//     await pb
-//       .collection(collectionItems)
-//       .delete(id, { user: pb.authStore.model?.id });
-//   } catch (e) {
-//     alert(e);
-//   }
-// }
 
 export default pb;
 
