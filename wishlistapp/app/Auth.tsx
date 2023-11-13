@@ -2,10 +2,14 @@
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { login, signout, isUserValid } from "./(hooks)/pocketbase";
+import { useState } from "react";
 
 export default function Auth() {
   const { register, handleSubmit } = useForm();
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  if (loading) return <p>Loading ...</p>;
 
   if (isUserValid())
     return (
@@ -23,11 +27,11 @@ export default function Auth() {
     );
   return (
     <>
-      {/* {isLoading && <p>Loading ...</p>} */}
-
       <form
         onSubmit={handleSubmit((e) => {
+          setLoading(true);
           login(e.email, e.password);
+          setLoading(false);
         })}
       >
         <input type="text" placeholder="email" {...register("email")} />

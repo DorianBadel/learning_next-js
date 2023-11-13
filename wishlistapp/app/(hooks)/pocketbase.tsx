@@ -153,6 +153,30 @@ export async function getAllItems({
   }
 }
 
+export async function getWlItem(id: string): Promise<ItemT | undefined> {
+  if (!pb.authStore.isValid) return;
+  console.log(id);
+  try {
+    const data = await pb
+      .collection(collectionItems)
+      .getOne(id, { user: pb.authStore.model?.id, expand: "tagId" })
+      .then((data) => {
+        return {
+          id: data.id,
+          Name: data.Name,
+          Price: data.Price,
+          Item_link: data.Item_link,
+          Priority: data.Priority,
+          Tag: data.expand?.tagId,
+        };
+      });
+    console.log("getWlItem: ", data);
+    return data;
+  } catch (e) {
+    console.log("error", e);
+  }
+}
+
 export type ItemPostT = {
   Name: string;
   Price: string;
@@ -186,19 +210,6 @@ export async function createWlItem(item: ItemPostT) {
 //     await pb.collection(collectionTag).create(data);
 //   } catch (e) {
 //     alert(e);
-//   }
-// }
-
-// export async function getWlItem(id: string) {
-//   if (!pb.authStore.isValid) return;
-//   try {
-//     const data = await pb
-//       .collection(collectionItems)
-//       .getOne(id, { user: pb.authStore.model?.id });
-//     console.log(data);
-//     return data;
-//   } catch (e) {
-//     console.log("error", e);
 //   }
 // }
 
