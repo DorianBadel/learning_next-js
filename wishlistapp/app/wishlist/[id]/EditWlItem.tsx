@@ -3,17 +3,19 @@ import {
   deleteWlItem,
   getWlItem,
   updateWlItem,
+  ItemPostT,
 } from "@/app/(hooks)/pocketbase";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import SelectTags from "@/app/createItem/SelectTags";
 
 export default function EditWlItem({ wl_itemId }: { wl_itemId: string }) {
-  const [content, setContent] = useState({
+  const [content, setContent] = useState<ItemPostT>({
     Name: "",
     Price: "",
     Item_link: "",
     tagId: "",
+    Image: undefined,
     Priority: 0,
   });
   const router = useRouter();
@@ -54,6 +56,20 @@ export default function EditWlItem({ wl_itemId }: { wl_itemId: string }) {
     <div>
       <div>
         <form onSubmit={update}>
+          <input
+            name="imageField"
+            type="file"
+            placeholder="Image"
+            onChange={(e) => {
+              if (e.target.files) {
+                setContent((prev) => ({
+                  ...prev,
+                  Image: e.target.files ? e.target.files[0] : undefined,
+                }));
+                console.log(content.Image);
+              }
+            }}
+          />
           <input
             name="nameField"
             type="text"

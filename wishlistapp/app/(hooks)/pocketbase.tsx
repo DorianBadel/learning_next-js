@@ -222,15 +222,11 @@ export async function createWlItem(item: ItemPostT) {
 
 export async function updateWlItem(item: ItemPostT, id: string) {
   if (!pb.authStore.isValid) return;
-  try {
-    const data = {
-      ...item,
-      user: pb.authStore.model?.id,
-    };
-    await pb.collection(collectionItems).update(id, data);
-  } catch (e) {
-    alert(e);
-  }
+  const data = {
+    ...item,
+    user: pb.authStore.model?.id,
+  };
+  await pb.collection(collectionItems).update(id, data);
 }
 
 export async function deleteWlItem(id: string) {
